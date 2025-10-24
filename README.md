@@ -1,6 +1,6 @@
 # Loto 6/45 App
 
-Web aplikacija za loto igru 6/45.
+Web aplikacija za loto 6/45.
 
 ## Features
 - User authentication with Auth0
