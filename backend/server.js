@@ -86,6 +86,36 @@ app.get('/auth/custom-login', (req, res) => {
 app.use("/auth", authRoutes);
 app.use("/tickets", ticketsRoutes);
 app.use("/rounds", roundsRoutes);
+app.get('/init-db', async (req, res) => {
+  try {
+    const client = await pool.connect();
+    
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS rounds (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        status VARCHAR(20) DEFAULT 'active',
+        created_at TIMESTAMP DEFAULT NOW(),
+        closed_at TIMESTAMP,
+        drawn_numbers INTEGER[]
+      )
+    `);
+    
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS tickets (
+        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+        round_id UUID REFERENCES rounds(id),
+        personal_id VARCHAR(20) NOT NULL,
+        numbers INTEGER[] NOT NULL,
+        created_at TIMESTAMP DEFAULT NOW()
+      )
+    `);
+    
+    client.release();
+    res.send('Database tables created successfully!');
+  } catch (err) {
+    res.status(500).send('Error: ' + err.message);
+  }
+});
 
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
