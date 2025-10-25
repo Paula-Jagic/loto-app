@@ -21,10 +21,21 @@ const HomePage = () => {
   const [currentRoundId, setCurrentRoundId] = useState(null);
 
   useEffect(() => {
+    console.log('=== HOME PAGE LOADING ===');
+    console.log('API_URL:', API_URL);
     fetch(`${API_URL}/auth/profile`, { credentials: "include" })  // ← PROMIJENJENO
-      .then((res) => res.json())
-      .then((data) => setUser(data))
-      .catch((err) => console.error(err));
+      .then((res) => {
+    console.log('Profile response status:', res.status);
+    console.log('Profile response ok:', res.ok);
+    return res.json();
+  })
+      .then((data) => {
+    console.log('Profile data:', data);
+    setUser(data);
+  })
+      .catch((err) => {
+    console.error('Profile fetch error:', err);
+  });
 
     fetchRoundInfo();
     

@@ -13,6 +13,10 @@ dotenv.config();
 const app = express();
 
 const PORT = process.env.PORT || 8080;
+app.use((req, res, next) => {
+  console.log(`${req.method} ${req.path}`);
+  next();
+});
 
 app.use(cors({
   origin: 'https://loto-app-frontend-ht8o.onrender.com',
@@ -56,9 +60,17 @@ app.get('/', (req, res) => {
 
 
 app.get('/auth/profile', (req, res) => {
+  console.log('=== /auth/profile called ===');
+  console.log('req.oidc.isAuthenticated():', req.oidc.isAuthenticated());
+  console.log('req.oidc.user:', req.oidc.user);
+  console.log('req.headers:', req.headers);
+  
   if (!req.oidc.isAuthenticated()) {
+    console.log('User NOT authenticated');
     return res.status(401).json({ message: "Not logged in" });
   }
+  
+  console.log('User authenticated:', req.oidc.user.email);
   res.json(req.oidc.user);
 });
 
