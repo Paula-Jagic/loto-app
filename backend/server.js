@@ -83,6 +83,12 @@ app.get('/auth/custom-login', (req, res) => {
   });
 });
 
+app.get('/auth/custom-logout', (req, res) => {
+  const returnTo = process.env.NODE_ENV === 'production' 
+    ? 'https://loto-app-frontend-ht8o.onrender.com'
+    : 'http://localhost:5173';
+  res.oidc.logout({ returnTo });
+});
 
 app.use("/auth", authRoutes);
 app.use("/tickets", ticketsRoutes);

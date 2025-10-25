@@ -162,8 +162,7 @@ const HomePage = () => {
         <div className="text-xl font-bold">Loto 6/45</div>
         <button
           onClick={() =>
-            (window.location.href =
-              `${API_URL}/auth/logout?returnTo=${FRONTEND_URL}`)  // ← PROMIJENJENO
+           (window.location.href = `${API_URL}/auth/custom-logout`)
           }
           className="px-4 py-2 bg-pink-600 text-white rounded hover:bg-pink-700"
         >
