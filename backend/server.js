@@ -15,16 +15,12 @@ const app = express();
 const PORT = process.env.PORT || 8080;
 
 app.use(cors({
-  origin: 'http://localhost:5173',
+  origin: 'https://loto-app-frontend.onrender.com',
   credentials: true
 }));
 
 app.use(express.json());
 
-app.use(cors({
-  origin: "http://localhost:5173",
-  credentials: true
-}));
 
 
 app.use(session({
@@ -69,7 +65,9 @@ app.get('/auth/profile', (req, res) => {
 
 app.get('/auth/custom-login', (req, res) => {
   res.oidc.login({
-    returnTo: 'http://localhost:5173/home'
+    returnTo: process.env.NODE_ENV === 'production'
+      ? 'https://loto-app-frontend.onrender.com/home'
+      : 'http://localhost:5173/home'
   });
 });
 
