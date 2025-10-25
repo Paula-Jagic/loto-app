@@ -15,7 +15,7 @@ const app = express();
 const PORT = process.env.PORT || 8080;
 
 app.use(cors({
-  origin: 'https://loto-app-frontend-ht8o.onrender.com',
+  origin: 'https://loto-app-frontend.onrender.com',
   credentials: true
 }));
 
@@ -65,7 +65,8 @@ app.get('/auth/profile', (req, res) => {
 
 app.get('/auth/custom-login', (req, res) => {
   res.oidc.login({
-     returnTo: 'https://loto-app-frontend-ht8o.onrender.com' 
+    returnTo: 'https://loto-app-frontend.onrender.com'
+      
   });
 });
 
