@@ -6,7 +6,7 @@ import cors from 'cors';
 import ticketsRoutes from "./routes/tickets.routes.js";
 import roundsRoutes from "./routes/rounds.routes.js";
 import pool from './db/db.js';  
-
+import { requireMachineAuth } from './middlewares/auth.js';
 
 dotenv.config();
 
@@ -25,15 +25,12 @@ app.use(cors({
 
 app.use(express.json());
 
-
-
 app.use(session({
   secret: process.env.AUTH0_SECRET,
   resave: false,
   saveUninitialized: true,
   cookie: { secure: false }
 }));
-
 
 const config = {
   authRequired: false,
@@ -50,14 +47,11 @@ const config = {
   }
 };
 
-
 app.use(auth(config));
-
 
 app.get('/', (req, res) => {
   res.send('Loto app backend is running!');
 });
-
 
 app.get('/auth/profile', (req, res) => {
   console.log('=== /auth/profile called ===');
@@ -74,11 +68,9 @@ app.get('/auth/profile', (req, res) => {
   res.json(req.oidc.user);
 });
 
-
 app.get('/auth/custom-login', (req, res) => {
   res.oidc.login({
     returnTo: 'https://loto-app-frontend-ht8o.onrender.com/#/home'
-      
   });
 });
 
@@ -89,10 +81,81 @@ app.get('/auth/custom-logout', (req, res) => {
   res.oidc.logout({ returnTo });
 });
 
+// ADMIN ENDPOINTS - direktno na root path kako je specificirano
+app.post('/new-round', requireMachineAuth, async (req, res) => {
+  try {
+    console.log('Activating new round...');
+    
+    await pool.query(
+      "UPDATE rounds SET status = 'closed', closed_at = NOW() WHERE status = 'active'"
+    );
 
+    await pool.query(
+      "INSERT INTO rounds (status) VALUES ('active')"
+    );
+
+    console.log('New round activated successfully');
+    res.status(204).send();
+  } catch (err) {
+    console.error('Error in /new-round:', err);
+    res.status(500).json({ message: "Error activating new round" });
+  }
+});
+
+app.post('/close', requireMachineAuth, async (req, res) => {
+  try {
+    console.log('Closing current round...');
+    
+    await pool.query(
+      "UPDATE rounds SET status = 'closed', closed_at = NOW() WHERE status = 'active'"
+    );
+    
+    console.log('Round closed successfully');
+    res.status(204).send();
+  } catch (err) {
+    console.error('Error in /close:', err);
+    res.status(500).json({ message: "Error closing round" });
+  }
+});
+
+app.post('/store-results', requireMachineAuth, async (req, res) => {
+  try {
+    const { numbers } = req.body;
+    
+    console.log('Storing results:', numbers);
+    
+    if (!numbers || !Array.isArray(numbers)) {
+      return res.status(400).json({ message: "Numbers array is required" });
+    }
+
+    const roundResult = await pool.query(
+      "SELECT id FROM rounds WHERE status = 'closed' AND drawn_numbers IS NULL ORDER BY created_at DESC LIMIT 1"
+    );
+
+    if (roundResult.rows.length === 0) {
+      return res.status(400).json({ 
+        message: "No closed round without results found" 
+      });
+    }
+
+    const roundId = roundResult.rows[0].id;
+    
+    await pool.query(
+      "UPDATE rounds SET drawn_numbers = $1 WHERE id = $2",
+      [numbers, roundId]
+    );
+
+    console.log('Results stored successfully for round:', roundId);
+    res.status(204).send();
+  } catch (err) {
+    console.error('Error in /store-results:', err);
+    res.status(500).json({ message: "Error storing results" });
+  }
+});
+
+// Ostale rute
 app.use("/tickets", ticketsRoutes);
 app.use("/rounds", roundsRoutes);
-
 
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
