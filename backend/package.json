@@ -12,6 +12,7 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "express-oauth2-bearer": "^1.7.1",
     "pg": "^8.11.0",
     "cors": "^2.8.5",
     "dotenv": "^17.2.3",
