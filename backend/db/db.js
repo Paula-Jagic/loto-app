@@ -4,7 +4,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 const { Pool } = pkg;
 
-// Koristite DATABASE_URL za production (Render), a individualne varijable za development
+
 const connectionConfig = process.env.DATABASE_URL 
   ? {
       connectionString: process.env.DATABASE_URL,
