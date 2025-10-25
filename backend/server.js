@@ -7,9 +7,16 @@ import ticketsRoutes from "./routes/tickets.routes.js";
 import roundsRoutes from "./routes/rounds.routes.js";
 import pool from './db/db.js';  
 import { requireMachineAuth } from './middlewares/auth.js';
+console.log('=== BEFORE DOTENV ===');
+console.log('AUTH0_CLIENT_ID from process.env:', process.env.AUTH0_CLIENT_ID);
+console.log('AUTH0_CLIENT_SECRET from process.env:', process.env.AUTH0_CLIENT_SECRET ? '***SET***' : 'MISSING');
+console.log('All process.env keys:', Object.keys(process.env).filter(key => key.includes('AUTH0')));
+
 
 dotenv.config();
-
+console.log('=== AFTER DOTENV ===');
+console.log('AUTH0_CLIENT_ID:', process.env.AUTH0_CLIENT_ID);
+console.log('AUTH0_CLIENT_SECRET:', process.env.AUTH0_CLIENT_SECRET ? '***SET***' : 'MISSING');
 const app = express();
 
 const PORT = process.env.PORT || 8080;
