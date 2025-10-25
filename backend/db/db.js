@@ -4,11 +4,10 @@ import dotenv from 'dotenv';
 dotenv.config();
 const { Pool } = pkg;
 
-
 const connectionConfig = process.env.DATABASE_URL 
   ? {
       connectionString: process.env.DATABASE_URL,
-      ssl: process.env.DB_SSL === 'true' ? { rejectUnauthorized: false } : false
+      ssl: { rejectUnauthorized: false }  // ← PROMIJENJENO: Uvijek SSL za production
     }
   : {
       host: process.env.DB_HOST,
