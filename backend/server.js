@@ -91,28 +91,33 @@ app.get('/init-db', async (req, res) => {
   try {
     const client = await pool.connect();
     
+    // Prvo obriši postojeće tablice
+    await client.query('DROP TABLE IF EXISTS tickets CASCADE');
+    await client.query('DROP TABLE IF EXISTS rounds CASCADE');
+    
+    // Kreiraj tablice s ispravnom strukturom (prema vašem pgAdminu)
     await client.query(`
-      CREATE TABLE IF NOT EXISTS rounds (
-        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-        status VARCHAR(20) DEFAULT 'active',
+      CREATE TABLE rounds (
+        id SERIAL PRIMARY KEY,
+        status VARCHAR(10) NOT NULL,
+        drawn_numbers INTEGER[],
         created_at TIMESTAMP DEFAULT NOW(),
-        closed_at TIMESTAMP,
-        drawn_numbers INTEGER[]
+        closed_at TIMESTAMP
       )
     `);
     
     await client.query(`
-      CREATE TABLE IF NOT EXISTS tickets (
+      CREATE TABLE tickets (
         id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-        round_id UUID REFERENCES rounds(id),
         personal_id VARCHAR(20) NOT NULL,
         numbers INTEGER[] NOT NULL,
-        created_at TIMESTAMP DEFAULT NOW()
+        round_id INTEGER REFERENCES rounds(id),
+        username VARCHAR
       )
     `);
     
     client.release();
-    res.send('Database tables created successfully!');
+    res.send('Tables recreated with correct structure!');
   } catch (err) {
     res.status(500).send('Error: ' + err.message);
   }
