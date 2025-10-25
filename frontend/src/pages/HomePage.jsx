@@ -163,7 +163,7 @@ const HomePage = () => {
         <button
           onClick={() =>
             (window.location.href =
-              `${API_URL}/auth/logout?returnTo=${FRONTEND_URL}/login`)  // ← PROMIJENJENO
+              `${API_URL}/auth/logout?returnTo=${FRONTEND_URL}`)  // ← PROMIJENJENO
           }
           className="px-4 py-2 bg-pink-600 text-white rounded hover:bg-pink-700"
         >
