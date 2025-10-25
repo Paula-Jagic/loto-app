@@ -6,7 +6,7 @@ import cors from 'cors';
 import authRoutes from './routes/auth.routes.js';
 import ticketsRoutes from "./routes/tickets.routes.js";
 import roundsRoutes from "./routes/rounds.routes.js";
-import { pool } from './db/db.js';
+import pool from './db/db.js';  
 
 
 dotenv.config();
