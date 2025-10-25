@@ -3,7 +3,6 @@ import session from 'express-session';
 import { auth } from 'express-openid-connect';
 import dotenv from 'dotenv';
 import cors from 'cors';
-import authRoutes from './routes/auth.routes.js';
 import ticketsRoutes from "./routes/tickets.routes.js";
 import roundsRoutes from "./routes/rounds.routes.js";
 import pool from './db/db.js';  
@@ -90,7 +89,7 @@ app.get('/auth/custom-logout', (req, res) => {
   res.oidc.logout({ returnTo });
 });
 
-app.use("/auth", authRoutes);
+
 app.use("/tickets", ticketsRoutes);
 app.use("/rounds", roundsRoutes);
 
