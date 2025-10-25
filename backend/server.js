@@ -15,7 +15,7 @@ const app = express();
 const PORT = process.env.PORT || 8080;
 
 app.use(cors({
-  origin: 'https://loto-app-frontend.onrender.com',
+  origin: 'https://loto-app-frontend-ht8o.onrender.com',
   credentials: true
 }));
 
