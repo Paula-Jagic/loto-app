@@ -7,53 +7,29 @@ import ticketsRoutes from "./routes/tickets.routes.js";
 import roundsRoutes from "./routes/rounds.routes.js";
 import pool from './db/db.js';  
 import { requireMachineAuth } from './middlewares/auth.js';
-console.log('=== BEFORE DOTENV ===');
-console.log('AUTH0_CLIENT_ID from process.env:', process.env.AUTH0_CLIENT_ID);
-console.log('AUTH0_CLIENT_SECRET from process.env:', process.env.AUTH0_CLIENT_SECRET ? '***SET***' : 'MISSING');
-console.log('All process.env keys:', Object.keys(process.env).filter(key => key.includes('AUTH0')));
-
 
 dotenv.config();
-console.log('=== AFTER DOTENV ===');
-console.log('AUTH0_CLIENT_ID:', process.env.AUTH0_CLIENT_ID);
-console.log('AUTH0_CLIENT_SECRET:', process.env.AUTH0_CLIENT_SECRET ? '***SET***' : 'MISSING');
+
 const app = express();
 
 const PORT = process.env.PORT || 8080;
-
-// DODAJ OVO NA POČETAK ZA DEBUG
 app.use((req, res, next) => {
-  console.log('=== INCOMING REQUEST ===');
   console.log(`${req.method} ${req.path}`);
-  console.log('Origin:', req.headers.origin);
-  console.log('Cookies:', req.headers.cookie);
-  console.log('========================');
   next();
 });
 
-// POBOLJŠAJ CORS CONFIG
 app.use(cors({
   origin: 'https://loto-app-frontend-ht8o.onrender.com',
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'Cookie', 'Accept'],
-  exposedHeaders: ['Set-Cookie']
+  credentials: true
 }));
 
 app.use(express.json());
 
-// KLJUČNO: PROMIJENI SESSION CONFIG ZA PRODUKCIJU
 app.use(session({
   secret: process.env.AUTH0_SECRET,
   resave: false,
-  saveUninitialized: false, // PROMIJENI U false zbog sigurnosti
-  cookie: { 
-    secure: true, // PROMIJENI U true ZA PRODUKCIJU
-    httpOnly: true,
-    sameSite: 'none', // KLJUČNO ZA CROSS-DOMAIN
-    maxAge: 24 * 60 * 60 * 1000 // 24 sata
-  },
-  name: 'loto.sid' // Eksplicitno ime cookiea
+  saveUninitialized: true,
+  cookie: { secure: false }
 }));
 
 const config = {
@@ -67,29 +43,11 @@ const config = {
     callback: '/auth/callback',
   },
   authorizationParams: {
-    redirect_uri: `${process.env.AUTH0_BASE_URL}/auth/callback`,
-    response_type: 'code' // PROMIJENI U 'code'
-  },
-  
+    redirect_uri: `${process.env.AUTH0_BASE_URL}/auth/callback`
+  }
 };
 
 app.use(auth(config));
-
-// DODAJ TEST ENDPOINT ZA SESSION
-app.get('/auth/debug-session', (req, res) => {
-  console.log('=== DEBUG SESSION ===');
-  console.log('Session ID:', req.sessionID);
-  console.log('Session:', req.session);
-  console.log('OIDC isAuthenticated:', req.oidc?.isAuthenticated?.());
-  console.log('OIDC user:', req.oidc?.user);
-  
-  res.json({
-    sessionId: req.sessionID,
-    isAuthenticated: req.oidc?.isAuthenticated?.(),
-    user: req.oidc?.user,
-    cookies: req.headers.cookie
-  });
-});
 
 app.get('/', (req, res) => {
   res.send('Loto app backend is running!');
@@ -99,7 +57,7 @@ app.get('/auth/profile', (req, res) => {
   console.log('=== /auth/profile called ===');
   console.log('req.oidc.isAuthenticated():', req.oidc.isAuthenticated());
   console.log('req.oidc.user:', req.oidc.user);
-  console.log('req.headers.cookie:', req.headers.cookie);
+  console.log('req.headers:', req.headers);
   
   if (!req.oidc.isAuthenticated()) {
     console.log('User NOT authenticated');
@@ -117,11 +75,13 @@ app.get('/auth/custom-login', (req, res) => {
 });
 
 app.get('/auth/custom-logout', (req, res) => {
-  const returnTo = 'https://loto-app-frontend-ht8o.onrender.com';
+  const returnTo = process.env.NODE_ENV === 'production' 
+    ? 'https://loto-app-frontend-ht8o.onrender.com'
+    : 'http://localhost:5173';
   res.oidc.logout({ returnTo });
 });
 
-// ADMIN ENDPOINTS
+// ADMIN ENDPOINTS - direktno na root path kako je specificirano
 app.post('/new-round', requireMachineAuth, async (req, res) => {
   try {
     console.log('Activating new round...');
