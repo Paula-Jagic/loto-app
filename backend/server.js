@@ -87,41 +87,7 @@ app.get('/auth/custom-login', (req, res) => {
 app.use("/auth", authRoutes);
 app.use("/tickets", ticketsRoutes);
 app.use("/rounds", roundsRoutes);
-app.get('/init-db', async (req, res) => {
-  try {
-    const client = await pool.connect();
-    
-    // Prvo obriši postojeće tablice
-    await client.query('DROP TABLE IF EXISTS tickets CASCADE');
-    await client.query('DROP TABLE IF EXISTS rounds CASCADE');
-    
-    // Kreiraj tablice s ispravnom strukturom (prema vašem pgAdminu)
-    await client.query(`
-      CREATE TABLE rounds (
-        id SERIAL PRIMARY KEY,
-        status VARCHAR(10) NOT NULL,
-        drawn_numbers INTEGER[],
-        created_at TIMESTAMP DEFAULT NOW(),
-        closed_at TIMESTAMP
-      )
-    `);
-    
-    await client.query(`
-      CREATE TABLE tickets (
-        id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-        personal_id VARCHAR(20) NOT NULL,
-        numbers INTEGER[] NOT NULL,
-        round_id INTEGER REFERENCES rounds(id),
-        username VARCHAR
-      )
-    `);
-    
-    client.release();
-    res.send('Tables recreated with correct structure!');
-  } catch (err) {
-    res.status(500).send('Error: ' + err.message);
-  }
-});
+
 
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
