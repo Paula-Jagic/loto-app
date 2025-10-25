@@ -8,5 +8,8 @@ export const callback = (req, res) => {
 };
 
 export const logout = (req, res) => {
-  res.oidc.logout({ returnTo: "http://localhost:5173" });
+  const returnTo = process.env.NODE_ENV === 'production' 
+    ? 'https://loto-app-frontend-ht8o.onrender.com'
+    : 'http://localhost:5173';
+  res.oidc.logout({ returnTo });
 };
