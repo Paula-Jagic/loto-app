@@ -77,7 +77,7 @@ app.get('/auth/profile', (req, res) => {
 
 app.get('/auth/custom-login', (req, res) => {
   res.oidc.login({
-    returnTo: 'https://loto-app-frontend-ht8o.onrender.com'
+    returnTo: 'https://loto-app-frontend-ht8o.onrender.com/#/home'
       
   });
 });
