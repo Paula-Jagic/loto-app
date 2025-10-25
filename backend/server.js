@@ -63,14 +63,7 @@ const config = {
     redirect_uri: `${process.env.AUTH0_BASE_URL}/auth/callback`,
     response_type: 'code' // PROMIJENI U 'code'
   },
-  // DODAJ SESSION CONFIG
-  session: {
-    cookie: {
-      secure: true,
-      httpOnly: true,
-      sameSite: 'none'
-    }
-  }
+  
 };
 
 app.use(auth(config));
