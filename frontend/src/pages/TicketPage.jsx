@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 const TicketPage = () => {
   const { ticketId } = useParams();
   const [ticket, setTicket] = useState(null);
@@ -10,7 +12,7 @@ const TicketPage = () => {
   useEffect(() => {
     const fetchTicket = async () => {
       try {
-        const res = await fetch(`http://localhost:8080/tickets/${ticketId}`);
+        const res = await fetch(`${API_URL}/tickets/${ticketId}`);  // ← PROMIJENJENO
         if (res.ok) {
           const data = await res.json();
           setTicket(data.ticket);

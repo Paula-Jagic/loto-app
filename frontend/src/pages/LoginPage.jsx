@@ -1,8 +1,10 @@
 import React from "react";
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 const LoginPage = () => {
   const handleLogin = () => {
-    window.location.href = "http://localhost:8080/auth/custom-login";
+    window.location.href = `${API_URL}/auth/custom-login`;  // ← PROMIJENJENO
   };
 
   return (

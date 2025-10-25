@@ -1,5 +1,8 @@
 import React, { useEffect, useState } from "react";
 
+const API_URL = import.meta.env.VITE_API_URL;
+const FRONTEND_URL = import.meta.env.VITE_FRONTEND_URL;
+
 const HomePage = () => {
   const [user, setUser] = useState(null);
   const [personalId, setPersonalId] = useState("");
@@ -18,7 +21,7 @@ const HomePage = () => {
   const [currentRoundId, setCurrentRoundId] = useState(null);
 
   useEffect(() => {
-    fetch("http://localhost:8080/auth/profile", { credentials: "include" })
+    fetch(`${API_URL}/auth/profile`, { credentials: "include" })  // ← PROMIJENJENO
       .then((res) => res.json())
       .then((data) => setUser(data))
       .catch((err) => console.error(err));
@@ -32,7 +35,7 @@ const HomePage = () => {
 
   const fetchRoundInfo = async () => {
     try {
-      const res = await fetch("http://localhost:8080/rounds/current", {
+      const res = await fetch(`${API_URL}/rounds/current`, {  // ← PROMIJENJENO
         credentials: "include"
       });
       if (res.ok) {
@@ -56,7 +59,7 @@ const HomePage = () => {
 
   const loadQrCodeForTicket = async (ticketId) => {
     try {
-      const qrRes = await fetch(`http://localhost:8080/tickets/${ticketId}/qr`, {
+      const qrRes = await fetch(`${API_URL}/tickets/${ticketId}/qr`, {  // ← PROMIJENJENO
         credentials: "include"
       });
       if (qrRes.ok) {
@@ -100,7 +103,7 @@ const HomePage = () => {
     }
 
     try {
-      const res = await fetch("http://localhost:8080/tickets", {
+      const res = await fetch(`${API_URL}/tickets`, {  // ← PROMIJENJENO
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
@@ -121,7 +124,7 @@ const HomePage = () => {
         
         if (result.ticketId) {
           try {
-            const qrRes = await fetch(`http://localhost:8080/tickets/${result.ticketId}/qr`, {
+            const qrRes = await fetch(`${API_URL}/tickets/${result.ticketId}/qr`, {  // ← PROMIJENJENO
               credentials: "include"
             });
             if (qrRes.ok) {
@@ -149,7 +152,7 @@ const HomePage = () => {
         <button
           onClick={() =>
             (window.location.href =
-              "http://localhost:8080/auth/logout?returnTo=http://localhost:5173/login")
+              `${API_URL}/auth/logout?returnTo=${FRONTEND_URL}/login`)  // ← PROMIJENJENO
           }
           className="px-4 py-2 bg-pink-600 text-white rounded hover:bg-pink-700"
         >
@@ -270,12 +273,12 @@ const HomePage = () => {
                 <div className="bg-pink-50 p-3 rounded border border-pink-200">
                   <p className="text-sm text-pink-600 font-semibold mb-2">Direct Ticket Link:</p>
                   <a 
-                    href={`http://localhost:5173/ticket/${ticketId}`}
+                    href={`${FRONTEND_URL}/ticket/${ticketId}`}  // ← PROMIJENJENO
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-pink-700 underline break-all"
                   >
-                    http://localhost:5173/ticket/{ticketId}
+                    {FRONTEND_URL}/ticket/{ticketId}
                   </a>
                   <p className="text-xs text-pink-500 mt-1 text-center">
                     Scan QR code or click the link to view your ticket
