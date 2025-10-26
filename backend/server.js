@@ -11,6 +11,7 @@ import { requireMachineAuth } from './middlewares/auth.js';
 dotenv.config();
 
 const app = express();
+app.set('trust proxy', 1);
 
 const PORT = process.env.PORT || 8080;
 app.use((req, res, next) => {
@@ -28,12 +29,13 @@ app.use(express.json());
 app.use(session({
   secret: process.env.AUTH0_SECRET,
   resave: false,
-  saveUninitialized: true,
-  cookie: { 
-    secure: true, // MORA biti true u produkciji
-    httpOnly: true,
-    sameSite: 'none', // Probaj 'lax' umjesto 'none'
-    maxAge: 24 * 60 * 60 * 1000
+  saveUninitialized: false,
+  proxy: true,
+  cookie: {
+    secure: true,          // cookie se šalje samo preko HTTPS
+    httpOnly: true,        // zaštita od JS pristupa
+    sameSite: 'none',      // obavezno za cross-domain (frontend-backend različiti)
+    maxAge: 24 * 60 * 60 * 1000 // 1 dan
   }
 }));
 
