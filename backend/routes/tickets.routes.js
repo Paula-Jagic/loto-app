@@ -109,7 +109,7 @@ router.post("/", requiresAuth(), async (req, res) => {
 });
 
 // GET /tickets/:ticketId/qr
-router.get("/:ticketId/qr", requiresAuth(), generateQRCode);
+router.get("/:ticketId/qr",  generateQRCode);
 
 // GET /tickets/:ticketId
 router.get("/:ticketId", async (req, res) => {
