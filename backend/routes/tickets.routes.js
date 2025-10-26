@@ -110,13 +110,11 @@ router.post("/", requiresAuth(), async (req, res) => {
 
 // GET /tickets/:ticketId/qr
 router.get("/:ticketId/qr",  generateQRCode);
-
-// GET /tickets/:ticketId
 router.get("/:ticketId", async (req, res) => {
   try {
     const { ticketId } = req.params;
-    console.log('Fetching PUBLIC ticket details for:', ticketId);
     
+    // DIREKTAN DB QUERY - NEMA PROVJERE SESSIONA
     const result = await pool.query(
       `SELECT t.*, r.drawn_numbers, r.status as round_status
        FROM tickets t 
@@ -131,7 +129,7 @@ router.get("/:ticketId", async (req, res) => {
 
     const ticket = result.rows[0];
     
-    // Vrati podatke BEZ session provjere
+    // VRATI PODATKE - NEMA VEZE SA SESSIONOM
     res.json({
       ticket: {
         id: ticket.id,
@@ -142,8 +140,8 @@ router.get("/:ticketId", async (req, res) => {
       }
     });
   } catch (err) {
-    console.error('Error fetching ticket details:', err);
-    res.status(500).json({ message: "Error fetching ticket details" });
+    console.error('Error:', err);
+    res.status(500).json({ message: "Error fetching ticket" });
   }
 });
 
