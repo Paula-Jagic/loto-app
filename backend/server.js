@@ -73,46 +73,6 @@ app.use((req, res, next) => {
   next();
 });
 
-// DODANO: Custom Auth0 callback handler
-app.get('/auth/callback', (req, res, next) => {
-  console.log('=== CUSTOM AUTH0 CALLBACK HANDLER ===');
-  console.log('isAuthenticated:', req.oidc.isAuthenticated());
-  console.log('User:', req.oidc.user);
-  
-  if (req.oidc.isAuthenticated()) {
-    console.log('✅ LOGIN SUCCESSFUL - Manual session handling');
-    
-    // Eksplicitno spremi session
-    req.session.regenerate((err) => {
-      if (err) {
-        console.error('Session regenerate error:', err);
-        return next(err);
-      }
-      
-      // Spremi user info u session
-      req.session.userId = req.oidc.user.sub;
-      req.session.userEmail = req.oidc.user.email;
-      req.session.isAuthenticated = true;
-      
-      req.session.save((err) => {
-        if (err) {
-          console.error('Session save error:', err);
-          return next(err);
-        }
-        
-        console.log('✅ SESSION SAVED MANUALLY');
-        console.log('Session ID:', req.sessionID);
-        console.log('Session data:', req.session);
-        
-        // Redirect na frontend
-        return res.redirect('https://loto-app-frontend-ht8o.onrender.com/#/home');
-      });
-    });
-  } else {
-    console.log('❌ AUTHENTICATION FAILED IN CALLBACK');
-    next();
-  }
-});
 
 // Error handling za Auth0
 app.use('/auth', (err, req, res, next) => {
