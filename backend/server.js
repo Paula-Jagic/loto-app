@@ -34,7 +34,7 @@ app.use(session({
   cookie: {
     secure: true,          // cookie se šalje samo preko HTTPS
     httpOnly: true,        // zaštita od JS pristupa
-    sameSite: 'none',      // obavezno za cross-domain (frontend-backend različiti)
+    sameSite: 'None',      // obavezno za cross-domain (frontend-backend različiti)
     maxAge: 24 * 60 * 60 * 1000 ,// 1 dan
     
   }
@@ -53,7 +53,7 @@ const config = {
     absoluteDuration: 24 * 60 * 60, // 1 dan
     cookie: {
       secure: true,
-      sameSite: 'none', // OBAVEZNO PREGAZITE POSTAVKU
+      sameSite: 'None', // OBAVEZNO PREGAZITE POSTAVKU
     }
   },
   routes: {
