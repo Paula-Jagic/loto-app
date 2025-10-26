@@ -32,7 +32,7 @@ app.use(session({
   cookie: { 
     secure: true, // MORA biti true u produkciji
     httpOnly: true,
-    sameSite: 'lax', // Probaj 'lax' umjesto 'none'
+    sameSite: 'none', // Probaj 'lax' umjesto 'none'
     maxAge: 24 * 60 * 60 * 1000
   }
 }));
