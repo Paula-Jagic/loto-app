@@ -115,7 +115,7 @@ router.get("/:ticketId/qr",  generateQRCode);
 router.get("/:ticketId", async (req, res) => {
   try {
     const { ticketId } = req.params;
-    console.log('Fetching ticket details for:', ticketId);
+    console.log('Fetching PUBLIC ticket details for:', ticketId);
     
     const result = await pool.query(
       `SELECT t.*, r.drawn_numbers, r.status as round_status
@@ -126,13 +126,12 @@ router.get("/:ticketId", async (req, res) => {
     );
 
     if (result.rows.length === 0) {
-      console.log('Ticket not found:', ticketId);
       return res.status(404).json({ message: "Ticket not found" });
     }
 
     const ticket = result.rows[0];
-    console.log('Ticket found:', ticket);
     
+    // Vrati podatke BEZ session provjere
     res.json({
       ticket: {
         id: ticket.id,
@@ -144,7 +143,7 @@ router.get("/:ticketId", async (req, res) => {
     });
   } catch (err) {
     console.error('Error fetching ticket details:', err);
-    res.status(500).json({ message: "Error fetching ticket details: " + err.message });
+    res.status(500).json({ message: "Error fetching ticket details" });
   }
 });
 
