@@ -23,7 +23,7 @@ const HomePage = () => {
   useEffect(() => {
     console.log('=== HOME PAGE LOADING ===');
     console.log('API_URL:', API_URL);
-    fetch(`${API_URL}/auth/profile`, { credentials: "include" })  // ← PROMIJENJENO
+    fetch(`${API_URL}/auth/profile`, { credentials: "include" })  
       .then((res) => {
     console.log('Profile response status:', res.status);
     console.log('Profile response ok:', res.ok);
@@ -46,7 +46,7 @@ const HomePage = () => {
 
   const fetchRoundInfo = async () => {
     try {
-      const res = await fetch(`${API_URL}/rounds/current`, {  // ← PROMIJENJENO
+      const res = await fetch(`${API_URL}/rounds/current`, {  
         credentials: "include"
       });
       if (res.ok) {
@@ -70,7 +70,7 @@ const HomePage = () => {
 
   const loadQrCodeForTicket = async (ticketId) => {
     try {
-      const qrRes = await fetch(`${API_URL}/tickets/${ticketId}/qr`, {  // ← PROMIJENJENO
+      const qrRes = await fetch(`${API_URL}/tickets/${ticketId}/qr`, {  
         credentials: "include"
       });
       if (qrRes.ok) {
@@ -114,7 +114,7 @@ const HomePage = () => {
     }
 
     try {
-      const res = await fetch(`${API_URL}/tickets`, {  // ← PROMIJENJENO
+      const res = await fetch(`${API_URL}/tickets`, {  
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
@@ -135,7 +135,7 @@ const HomePage = () => {
         
         if (result.ticketId) {
           try {
-            const qrRes = await fetch(`${API_URL}/tickets/${result.ticketId}/qr`, {  // ← PROMIJENJENO
+            const qrRes = await fetch(`${API_URL}/tickets/${result.ticketId}/qr`, {  
               credentials: "include"
             });
             if (qrRes.ok) {
@@ -283,12 +283,12 @@ const HomePage = () => {
                 <div className="bg-pink-50 p-3 rounded border border-pink-200">
                   <p className="text-sm text-pink-600 font-semibold mb-2">Direct Ticket Link:</p>
                   <a 
-                    href={`${FRONTEND_URL}/#/ticket/${ticketId}`}  // ← PROMIJENJENO
+                    href={`${FRONTEND_URL}/#/ticket/${ticketId}`} 
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-pink-700 underline break-all"
                   >
-                    {FRONTEND_URL}/ticket/{ticketId}
+                    {FRONTEND_URL}/#/ticket/{ticketId}
                   </a>
                   <p className="text-xs text-pink-500 mt-1 text-center">
                     Scan QR code or click the link to view your ticket

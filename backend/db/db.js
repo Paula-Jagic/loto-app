@@ -7,7 +7,7 @@ const { Pool } = pkg;
 const connectionConfig = process.env.DATABASE_URL 
   ? {
       connectionString: process.env.DATABASE_URL,
-      ssl: { rejectUnauthorized: false }  // ← PROMIJENJENO: Uvijek SSL za production
+      ssl: { rejectUnauthorized: false }  
     }
   : {
       host: process.env.DB_HOST,
@@ -19,7 +19,7 @@ const connectionConfig = process.env.DATABASE_URL
 
 export const pool = new Pool(connectionConfig);
 
-// Debug info
+
 console.log('Database configuration:', {
   usingDatabaseUrl: !!process.env.DATABASE_URL,
   hasDbHost: !!process.env.DB_HOST,

@@ -32,10 +32,10 @@ app.use(session({
   saveUninitialized: false,
   proxy: true,
   cookie: {
-    secure: true,          // cookie se šalje samo preko HTTPS
-    httpOnly: true,        // zaštita od JS pristupa
-    sameSite: 'None',      // obavezno za cross-domain (frontend-backend različiti)
-    maxAge: 24 * 60 * 60 * 1000 ,// 1 dan
+    secure: true,         
+    httpOnly: true,        
+    sameSite: 'None',      
+    maxAge: 24 * 60 * 60 * 1000 ,
     
   }
 }));
@@ -50,10 +50,10 @@ const config = {
   issuerBaseURL: process.env.AUTH0_ISSUER_BASEURL,
   session: {
     rolling: true,
-    absoluteDuration: 24 * 60 * 60, // 1 dan
+    absoluteDuration: 24 * 60 * 60, 
     cookie: {
       secure: true,
-      sameSite: 'None', // OBAVEZNO PREGAZITE POSTAVKU
+      sameSite: 'None', 
     }
   },
   routes: {
@@ -67,7 +67,7 @@ const config = {
 
 app.use(auth(config));
 
-// DODANO: Session debug middleware
+
 app.use((req, res, next) => {
   if (req.path === '/auth/callback' || req.path === '/auth/profile') {
     console.log('=== SESSION DEBUG ===');
@@ -82,7 +82,7 @@ app.use((req, res, next) => {
 });
 
 
-// Error handling za Auth0
+
 app.use('/auth', (err, req, res, next) => {
   console.error('Auth0 Error:', err);
   res.status(500).json({ 
@@ -123,7 +123,7 @@ app.get('/auth/custom-logout', (req, res) => {
   res.oidc.logout({ returnTo });
 });
 
-// DODANO: Session check endpoint za debug
+
 app.get('/auth/session-debug', (req, res) => {
   console.log('=== SESSION DEBUG ENDPOINT ===');
   console.log('Session ID:', req.sessionID);
@@ -141,7 +141,7 @@ app.get('/auth/session-debug', (req, res) => {
   });
 });
 
-// ADMIN ENDPOINTS - direktno na root path kako je specificirano
+
 app.post('/new-round', requireMachineAuth, async (req, res) => {
   try {
     console.log('Activating new round...');
@@ -213,7 +213,7 @@ app.post('/store-results', requireMachineAuth, async (req, res) => {
   }
 });
 
-// Ostale rute
+
 app.use("/tickets", ticketsRoutes);
 app.use("/rounds", roundsRoutes);
 

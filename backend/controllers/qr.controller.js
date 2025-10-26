@@ -5,9 +5,6 @@ export const generateQRCode = async (req, res) => {
   try {
     const { ticketId } = req.params;
     
-    // **KORAK 1: Dohvaćanje URL-a frontenda iz varijable okruženja**
-    // Ovu varijablu (FRONTEND_APP_URL) morate definirati na Renderu
-    // (npr. https://loto-app-frontend-ht8o.onrender.com)   
     const FRONTEND_URL = process.env.FRONTEND_APP_URL;
 
     if (!FRONTEND_URL) {
@@ -29,10 +26,10 @@ export const generateQRCode = async (req, res) => {
 
     const ticket = ticketResult.rows[0];
     
-    // **KORAK 2: Ispravan URL za QR kod**
-    // Koristite varijablu okruženja i dodajte '#/ticket/' za Hash Router
-    const ticketUrl = `${FRONTEND_URL}/#/ticket/${ticketId}`; // 🛑 ISPRAVLJENO
-    console.log('QR URL:', ticketUrl); // DODAJ OVO
+    
+    
+    const ticketUrl = `${FRONTEND_URL}/#/ticket/${ticketId}`; 
+    console.log('QR URL:', ticketUrl); 
     
     
     const qrCodeImage = await QRCode.toDataURL(ticketUrl);

@@ -15,7 +15,7 @@ const TicketPage = () => {
         const res = await fetch(`${API_URL}/tickets/${ticketId}`, {
   
 });
-          // ← PROMIJENJENO
+          
         if (res.ok) {
           const data = await res.json();
           setTicket(data.ticket);

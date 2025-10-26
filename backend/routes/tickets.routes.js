@@ -96,11 +96,11 @@ router.post("/", requiresAuth(), async (req, res) => {
     console.error('Error stack:', err.stack);
     
     // Detaljniji error handling za različite tipove grešaka
-    if (err.code === '23505') { // Unique constraint violation
+    if (err.code === '23505') { 
       return res.status(400).json({ message: "Ticket already exists" });
-    } else if (err.code === '23503') { // Foreign key violation
+    } else if (err.code === '23503') { 
       return res.status(400).json({ message: "Invalid round reference" });
-    } else if (err.code === '22P02') { // Invalid input syntax
+    } else if (err.code === '22P02') { 
       return res.status(400).json({ message: "Invalid data format" });
     }
     
@@ -114,7 +114,7 @@ router.get("/:ticketId", async (req, res) => {
   try {
     const { ticketId } = req.params;
     
-    // DIREKTAN DB QUERY - NEMA PROVJERE SESSIONA
+    
     const result = await pool.query(
       `SELECT t.*, r.drawn_numbers, r.status as round_status
        FROM tickets t 
@@ -129,7 +129,7 @@ router.get("/:ticketId", async (req, res) => {
 
     const ticket = result.rows[0];
     
-    // VRATI PODATKE - NEMA VEZE SA SESSIONOM
+    
     res.json({
       ticket: {
         id: ticket.id,
