@@ -283,7 +283,7 @@ const HomePage = () => {
                 <div className="bg-pink-50 p-3 rounded border border-pink-200">
                   <p className="text-sm text-pink-600 font-semibold mb-2">Direct Ticket Link:</p>
                   <a 
-                    href={`${FRONTEND_URL}/ticket/${ticketId}`}  // ← PROMIJENJENO
+                    href={`${FRONTEND_URL}/#/ticket/${ticketId}`}  // ← PROMIJENJENO
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-pink-700 underline break-all"
