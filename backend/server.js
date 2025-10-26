@@ -29,7 +29,12 @@ app.use(session({
   secret: process.env.AUTH0_SECRET,
   resave: false,
   saveUninitialized: true,
-  cookie: { secure: false }
+  cookie: { 
+    secure: true, // MORA biti true u produkciji
+    httpOnly: true,
+    sameSite: 'lax', // Probaj 'lax' umjesto 'none'
+    maxAge: 24 * 60 * 60 * 1000
+  }
 }));
 
 const config = {
@@ -38,12 +43,14 @@ const config = {
   secret: process.env.AUTH0_SECRET,
   baseURL: process.env.AUTH0_BASE_URL,
   clientID: process.env.AUTH0_CLIENT_ID,
+  clientSecret: process.env.AUTH0_CLIENT_SECRET,
   issuerBaseURL: process.env.AUTH0_ISSUER_BASEURL,
   routes: {
     callback: '/auth/callback',
   },
   authorizationParams: {
-    redirect_uri: `${process.env.AUTH0_BASE_URL}/auth/callback`
+    redirect_uri: `${process.env.AUTH0_BASE_URL}/auth/callback`,
+    response_type: 'code'
   }
 };
 
