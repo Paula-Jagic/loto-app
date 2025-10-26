@@ -57,6 +57,62 @@ const config = {
 };
 
 app.use(auth(config));
+
+// DODANO: Session debug middleware
+app.use((req, res, next) => {
+  if (req.path === '/auth/callback' || req.path === '/auth/profile') {
+    console.log('=== SESSION DEBUG ===');
+    console.log('Path:', req.path);
+    console.log('Session ID:', req.sessionID);
+    console.log('OIDC Authenticated:', req.oidc?.isAuthenticated?.());
+    console.log('OIDC User:', req.oidc?.user);
+    console.log('Cookies in request:', req.headers.cookie);
+    console.log('=====================');
+  }
+  next();
+});
+
+// DODANO: Custom Auth0 callback handler
+app.get('/auth/callback', (req, res, next) => {
+  console.log('=== CUSTOM AUTH0 CALLBACK HANDLER ===');
+  console.log('isAuthenticated:', req.oidc.isAuthenticated());
+  console.log('User:', req.oidc.user);
+  
+  if (req.oidc.isAuthenticated()) {
+    console.log('✅ LOGIN SUCCESSFUL - Manual session handling');
+    
+    // Eksplicitno spremi session
+    req.session.regenerate((err) => {
+      if (err) {
+        console.error('Session regenerate error:', err);
+        return next(err);
+      }
+      
+      // Spremi user info u session
+      req.session.userId = req.oidc.user.sub;
+      req.session.userEmail = req.oidc.user.email;
+      req.session.isAuthenticated = true;
+      
+      req.session.save((err) => {
+        if (err) {
+          console.error('Session save error:', err);
+          return next(err);
+        }
+        
+        console.log('✅ SESSION SAVED MANUALLY');
+        console.log('Session ID:', req.sessionID);
+        console.log('Session data:', req.session);
+        
+        // Redirect na frontend
+        return res.redirect('https://loto-app-frontend-ht8o.onrender.com/#/home');
+      });
+    });
+  } else {
+    console.log('❌ AUTHENTICATION FAILED IN CALLBACK');
+    next();
+  }
+});
+
 // Error handling za Auth0
 app.use('/auth', (err, req, res, next) => {
   console.error('Auth0 Error:', err);
@@ -96,6 +152,24 @@ app.get('/auth/custom-logout', (req, res) => {
     ? 'https://loto-app-frontend-ht8o.onrender.com'
     : 'http://localhost:5173';
   res.oidc.logout({ returnTo });
+});
+
+// DODANO: Session check endpoint za debug
+app.get('/auth/session-debug', (req, res) => {
+  console.log('=== SESSION DEBUG ENDPOINT ===');
+  console.log('Session ID:', req.sessionID);
+  console.log('Session data:', req.session);
+  console.log('OIDC Authenticated:', req.oidc?.isAuthenticated?.());
+  console.log('OIDC User:', req.oidc?.user);
+  console.log('Request cookies:', req.headers.cookie);
+  
+  res.json({
+    sessionId: req.sessionID,
+    sessionData: req.session,
+    isAuthenticated: req.oidc?.isAuthenticated?.(),
+    oidcUser: req.oidc?.user,
+    hasCookies: !!req.headers.cookie
+  });
 });
 
 // ADMIN ENDPOINTS - direktno na root path kako je specificirano
