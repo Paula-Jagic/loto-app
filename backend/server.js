@@ -55,6 +55,14 @@ const config = {
 };
 
 app.use(auth(config));
+// Error handling za Auth0
+app.use('/auth', (err, req, res, next) => {
+  console.error('Auth0 Error:', err);
+  res.status(500).json({ 
+    error: 'Authentication failed',
+    details: err.message 
+  });
+});
 
 app.get('/', (req, res) => {
   res.send('Loto app backend is running!');
