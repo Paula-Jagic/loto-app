@@ -35,7 +35,8 @@ app.use(session({
     secure: true,          // cookie se šalje samo preko HTTPS
     httpOnly: true,        // zaštita od JS pristupa
     sameSite: 'none',      // obavezno za cross-domain (frontend-backend različiti)
-    maxAge: 24 * 60 * 60 * 1000 // 1 dan
+    maxAge: 24 * 60 * 60 * 1000 ,// 1 dan
+    domain: '.onrender.com' 
   }
 }));
 
