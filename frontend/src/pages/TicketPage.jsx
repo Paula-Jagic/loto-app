@@ -13,7 +13,7 @@ const TicketPage = () => {
     const fetchTicket = async () => {
       try {
         const res = await fetch(`${API_URL}/tickets/${ticketId}`, {
-  credentials: "include"  // ← DODAJ OVO!
+  
 });
           // ← PROMIJENJENO
         if (res.ok) {
