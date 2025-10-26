@@ -12,7 +12,10 @@ const TicketPage = () => {
   useEffect(() => {
     const fetchTicket = async () => {
       try {
-        const res = await fetch(`${API_URL}/tickets/${ticketId}`);  // ← PROMIJENJENO
+        const res = await fetch(`${API_URL}/tickets/${ticketId}`, {
+  credentials: "include"  // ← DODAJ OVO!
+});
+          // ← PROMIJENJENO
         if (res.ok) {
           const data = await res.json();
           setTicket(data.ticket);
