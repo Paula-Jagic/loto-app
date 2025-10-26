@@ -34,7 +34,7 @@ app.use(session({
   cookie: {
     secure: true,          // cookie se šalje samo preko HTTPS
     httpOnly: true,        // zaštita od JS pristupa
-    sameSite: 'None',      // obavezno za cross-domain (frontend-backend različiti)
+    sameSite: 'none',      // obavezno za cross-domain (frontend-backend različiti)
     maxAge: 24 * 60 * 60 * 1000 ,// 1 dan
     
   }
@@ -48,6 +48,14 @@ const config = {
   clientID: process.env.AUTH0_CLIENT_ID,
   clientSecret: process.env.AUTH0_CLIENT_SECRET,
   issuerBaseURL: process.env.AUTH0_ISSUER_BASEURL,
+  session: {
+    rolling: true,
+    absoluteDuration: 24 * 60 * 60, // 1 dan
+    cookie: {
+      secure: true,
+      sameSite: 'none', // OBAVEZNO PREGAZITE POSTAVKU
+    }
+  },
   routes: {
     callback: '/auth/callback',
   },
