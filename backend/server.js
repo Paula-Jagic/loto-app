@@ -11,6 +11,7 @@ import { requireMachineAuth } from './middlewares/auth.js';
 dotenv.config();
 
 const app = express();
+app.set('trust proxy', 1);
 
 const PORT = process.env.PORT || 8080;
 app.use((req, res, next) => {
@@ -28,11 +29,11 @@ app.use(express.json());
 app.use(session({
   secret: process.env.AUTH0_SECRET,
   resave: false,
-  saveUninitialized: true,
-  cookie: { 
-    secure: true, // MORA biti true u produkciji
+  saveUninitialized: false,
+  cookie: {
+    secure: true,       // MORA BITI true
     httpOnly: true,
-    sameSite: 'none', // Probaj 'lax' umjesto 'none'
+    sameSite: 'none',   // MORA BITI 'none'
     maxAge: 24 * 60 * 60 * 1000
   }
 }));
